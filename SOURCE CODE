@@ -1,0 +1,32 @@
+import pandas as pd
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
+
+# Input file path
+file_path = r"C:\Users\Diganth R Gowda\Downloads\Automobile - Automobile.csv"
+
+# Read CSV
+df = pd.read_csv(file_path)
+
+# Drop 'horsepower' column if it exists
+if 'horsepower' in df.columns:
+    df.drop(columns=['horsepower'], inplace=True)
+
+# Handle missing values using median imputation
+imputer = SimpleImputer(strategy='median')
+numeric_cols = df.select_dtypes(include=['float64', 'int64']).columns
+df[numeric_cols] = imputer.fit_transform(df[numeric_cols])
+
+# Apply Min-Max Scaling
+minmax_scaler = MinMaxScaler()
+df_minmax = pd.DataFrame(minmax_scaler.fit_transform(df[numeric_cols]), columns=numeric_cols)
+
+# Apply Standard Scaling
+standard_scaler = StandardScaler()
+df_standard = pd.DataFrame(standard_scaler.fit_transform(df[numeric_cols]), columns=numeric_cols)
+
+# Save processed files with "0135"
+df_minmax.to_csv(r"C:\Users\Diganth R Gowda\Downloads\Automobile_minmax_scaled_0135.csv", index=False)
+df_standard.to_csv(r"C:\Users\Diganth R Gowda\Downloads\Automobile_standard_scaled_0135.csv", index=False)
+
+print(" Data preprocessing completed! Files saved in Downloads folder.")
